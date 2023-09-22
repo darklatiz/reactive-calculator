@@ -5,6 +5,7 @@ import io.gigabyte.labs.playground.dto.MultiplyCommand;
 import io.gigabyte.labs.playground.dto.OperationEnum;
 import io.gigabyte.labs.playground.dto.Response;
 import io.gigabyte.labs.playground.exception.InputValidationException;
+import io.gigabyte.labs.playground.factory.impl.functions.Fibonacci;
 import io.gigabyte.labs.playground.service.ReactiveMathService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class RequestHandler {
             return Mono.error(err);
         }
         Mono<IResponse.Answer> square = this.reactiveMathService.square(number);
-        return ServerResponse.ok().body(square, Response.class);
+        return ServerResponse.ok().body(square, IResponse.Answer.class);
     }
 
     public Mono<ServerResponse> multiplicationTableHandler(ServerRequest serverRequest) {
@@ -80,5 +81,33 @@ public class RequestHandler {
         return ServerResponse
           .ok()
           .body(responseMono, IResponse.Answer.class);
+    }
+
+    public Mono<ServerResponse> fibonacci(ServerRequest serverRequest) {
+        String number1 = serverRequest.pathVariable("number1");
+        long parsedData = Long.parseLong(number1);
+        Long beenCalculated = Fibonacci.hasBeenCalculated(parsedData);
+
+        Mono<IResponse.Answer> answer;
+        if (Objects.nonNull(beenCalculated)) {
+            answer = Mono.just(BigDecimal.valueOf(beenCalculated))
+              .map(bigDecimal -> IResponse.Answer.createAnswer(bigDecimal, OperationEnum.FIBONACCI, IResponse.Error.EMPTY, String.format("fib(%d) = %,d", parsedData, beenCalculated)));
+        } else {
+            Fibonacci fibonacci = new Fibonacci(parsedData);
+            answer = Mono.fromSupplier(fibonacci::resolve)
+              .map(number -> IResponse.Answer.createAnswer(BigDecimal.valueOf(number.longValue()), OperationEnum.FIBONACCI, IResponse.Error.EMPTY, fibonacci.description()));
+        }
+        return ServerResponse
+          .ok()
+          .body(answer, IResponse.Answer.class);
+    }
+
+    public Mono<ServerResponse> mathFunctionsHandler(ServerRequest serverRequest) {
+        String function = serverRequest.pathVariable("function");
+        if (function.equalsIgnoreCase(OperationEnum.FIBONACCI.shortDescription())) {
+            return fibonacci(serverRequest);
+        }
+
+        return ServerResponse.badRequest().build();
     }
 }

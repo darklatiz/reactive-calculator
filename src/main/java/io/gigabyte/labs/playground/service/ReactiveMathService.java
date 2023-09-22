@@ -5,7 +5,6 @@ import io.gigabyte.labs.playground.dto.MultiplyCommand;
 import io.gigabyte.labs.playground.dto.OperationEnum;
 import io.gigabyte.labs.playground.dto.Response;
 import io.gigabyte.labs.playground.factory.OperationFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,9 +13,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-@Slf4j
 public class ReactiveMathService {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReactiveMathService.class);
     private final OperationFactory operationFactory;
 
     public ReactiveMathService(OperationFactory operationFactory) {

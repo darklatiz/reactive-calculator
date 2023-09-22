@@ -2,7 +2,6 @@ package io.gigabyte.labs.playground.service;
 
 import io.gigabyte.labs.playground.dto.IResponse;
 import io.gigabyte.labs.playground.dto.OperationEnum;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -10,8 +9,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @Service
-@Slf4j
 public class MathService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MathService.class);
 
 
     public IResponse.Answer square(int n) {

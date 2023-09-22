@@ -1,14 +1,14 @@
 package io.gigabyte.labs.playground.exception;
 
-import lombok.Getter;
 
-@Getter
 public class InputValidationException extends RuntimeException {
 
     private String message = "Allowed range is -50 TO 50";
     private final int errorCode = 100;
     private int input;
     private String operation;
+
+    public InputValidationException() {}
 
     public InputValidationException(int input, String operation) {
         super();
@@ -24,6 +24,20 @@ public class InputValidationException extends RuntimeException {
         this.message = message;
     }
 
+    @Override
+    public String getMessage() {
+        return message;
+    }
 
+    public int getErrorCode() {
+        return errorCode;
+    }
 
+    public int getInput() {
+        return input;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
 }

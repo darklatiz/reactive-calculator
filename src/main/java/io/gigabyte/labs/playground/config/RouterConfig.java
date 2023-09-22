@@ -35,6 +35,7 @@ public class RouterConfig {
           .GET("table/{number}/stream", requestHandler::streamMultiplicationTableHandler)
           .POST("multiplies", requestHandler::multiplyHandler)
           .GET("calculator/{number1}/{number2}", requestHandler::calculator)
+          .GET("function/{function}/{number1}", requestHandler::mathFunctionsHandler)
           .onError(InputValidationException.class, exceptionHandler())
           .build();
     }

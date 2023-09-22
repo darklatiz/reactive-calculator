@@ -5,7 +5,6 @@ import io.gigabyte.labs.playground.dto.MultiplyCommand;
 import io.gigabyte.labs.playground.dto.Response;
 import io.gigabyte.labs.playground.exception.InputValidationException;
 import io.gigabyte.labs.playground.service.ReactiveMathService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,11 +18,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-@Slf4j
 @RestController
 @RequestMapping("/reactive/math")
 public class MathReactiveController {
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MathReactiveController.class);
     private final ReactiveMathService mathService;
 
     public MathReactiveController(ReactiveMathService reactiveMathService) {
