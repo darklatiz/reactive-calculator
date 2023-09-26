@@ -25,6 +25,10 @@ public class BracketValidationStep implements ProcessingStep {
     @Override
     public void process(ProcessingContext context) throws JsonParsingException {
         String removedWhiteSpaces = context.removeWhiteSpaces();
+        if (Parser.isNullOrEmpty.test(removedWhiteSpaces)) {
+            throw new JsonParsingException("Json String is null: " + removedWhiteSpaces);
+        }
+
         Boolean isValid = isBracketBalanced(removedWhiteSpaces);
 
         if (Boolean.FALSE.equals(isValid)) {
