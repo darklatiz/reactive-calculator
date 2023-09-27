@@ -6,7 +6,7 @@ import io.gigabyte.labs.playground.core.model.ProcessingContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PipelineTests {
+class PipelineTests {
 
     String[] balancedJson = {
       """

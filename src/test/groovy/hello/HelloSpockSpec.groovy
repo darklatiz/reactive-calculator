@@ -13,4 +13,10 @@ class HelloSpockSpec extends Specification {
         "Kirk"   | 4
         "Scotty" | 6
     }
+
+
+    def "Quote Validation"() {
+
+
+    }
 }  

@@ -19,7 +19,7 @@ public class QuoteValidationStep implements ProcessingStep {
 
     @Override
     public void process(ProcessingContext processingContext) throws JsonParsingException {
-        String removedWhiteSpaces = processingContext.removeWhiteSpaces();
+        String removedWhiteSpaces = processingContext.getJsonStringWithoutSpaces();
         if (Parser.isNullOrEmpty.test(removedWhiteSpaces)) {
             throw new JsonParsingException("Quotes are not balanced: " + processingContext.getJsonString());
         }

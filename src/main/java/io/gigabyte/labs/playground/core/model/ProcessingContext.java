@@ -6,15 +6,21 @@ import java.util.Map;
 public class ProcessingContext {
 
     private final String jsonString;
+    private String jsonStringWithoutSpaces;
     private List<String> tokens;
     private Map<String, String> keyValuePairs;
 
     public ProcessingContext(String jsonString) {
         this.jsonString = jsonString;
+        this.jsonStringWithoutSpaces = removeWhiteSpaces();
     }
 
     public String getJsonString() {
         return jsonString;
+    }
+
+    public String getJsonStringWithoutSpaces(){
+        return jsonStringWithoutSpaces;
     }
 
     public List<String> getTokens() {
@@ -33,7 +39,7 @@ public class ProcessingContext {
         this.keyValuePairs = keyValuePairs;
     }
 
-    public String removeWhiteSpaces() {
+    private String removeWhiteSpaces() {
         return this.jsonString.replaceAll("\\s+", "");
     }
 }
