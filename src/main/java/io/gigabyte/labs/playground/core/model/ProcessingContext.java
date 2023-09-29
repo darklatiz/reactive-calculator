@@ -1,7 +1,9 @@
 package io.gigabyte.labs.playground.core.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProcessingContext {
 
@@ -9,10 +11,14 @@ public class ProcessingContext {
     private String jsonStringWithoutSpaces;
     private List<String> tokens;
     private Map<String, String> keyValuePairs;
+    private Map<String, Boolean> results;
 
     public ProcessingContext(String jsonString) {
         this.jsonString = jsonString;
         this.jsonStringWithoutSpaces = removeWhiteSpaces();
+        if (Objects.isNull(results)) {
+            this.results = new HashMap<>();
+        }
     }
 
     public String getJsonString() {

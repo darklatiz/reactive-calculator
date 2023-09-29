@@ -18,33 +18,58 @@ public class QuoteValidationStep implements ProcessingStep {
     }
 
     @Override
-    public void process(ProcessingContext processingContext) throws JsonParsingException {
-        String removedWhiteSpaces = processingContext.getJsonStringWithoutSpaces();
-        if (Parser.isNullOrEmpty.test(removedWhiteSpaces)) {
-            throw new JsonParsingException("Quotes are not balanced: " + processingContext.getJsonString());
+    public void process(ProcessingContext context) throws JsonParsingException {
+        String jsonStringWithoutSpaces = context.getJsonStringWithoutSpaces();
+        if (Parser.isNullOrEmpty.test(jsonStringWithoutSpaces)) {
+            throw new JsonParsingException("Quotes are not balanced: " + context.getJsonString());
         }
 
-        String jsonString = processingContext.getJsonString();
-        boolean insideString = false;
+        State state = State.OUTSIDE_STRING;
 
-        for (int i = 0; i < jsonString.length(); i++) {
-            char ch = jsonString.charAt(i);
-            if (ch == '"' && (i == 0 || jsonString.charAt(i - 1) != '\\')) {
-                insideString = !insideString; // Toggle the flag
+        for (int i = 0; i < jsonStringWithoutSpaces.length(); i++) {
+            char ch = jsonStringWithoutSpaces.charAt(i);
+
+            switch (state) {
+                case OUTSIDE_STRING:
+                    if (ch == '"') {
+                        state = State.INSIDE_STRING;
+                    }
+                    break;
+
+                case INSIDE_STRING:
+                    if (ch == '"' && (i == 0 || jsonStringWithoutSpaces.charAt(i - 1) != '\\')) {
+                        state = State.EXPECTING_COMMA_OR_CLOSING;
+                    }
+                    break;
+
+                case EXPECTING_COMMA_OR_CLOSING:
+                    if (ch == '"') {
+                        char precedingChar = jsonStringWithoutSpaces.charAt(i - 1);
+                        if (precedingChar != ':' && precedingChar != ',' && precedingChar != '{' && precedingChar != '[') {
+                            throw new JsonParsingException("Misplaced quotes at index: " + i);
+                        } else {
+                            state = State.INSIDE_STRING;
+                        }
+                    }
+                    break;
             }
         }
 
-
-
-        if (insideString) {
+        if (state == State.INSIDE_STRING) {
             throw new JsonParsingException("Unbalanced quotes");
         }
 
-        // If this step is successful and there's a next step, invoke it
-        if (next != null) {
-            next.process(processingContext);
+        if (Objects.nonNull(next)) {
+            next.process(context);
         }
 
+
+    }
+
+    private enum State {
+        OUTSIDE_STRING,
+        INSIDE_STRING,
+        EXPECTING_COMMA_OR_CLOSING
     }
 
     public static void main(String[] args) {
